@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Generator Surat Izin</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- html2canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <!-- EmailJS -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">📄</div>
+
+            <div>
+                <h2>Surat Izin</h2>
+                <span>Generator</span>
+            </div>
+        </div>
+
+        <nav>
+            <a href="#" class="active">
+                <span>📝</span>
+                Pengajuan Izin
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <small>Internal Application</small>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <header class="topbar">
+
+            <div>
+                <h1>Pengajuan Surat Izin</h1>
+                <p>Buat surat izin karyawan dengan cepat.</p>
+            </div>
+
+            <div class="date-now" id="tanggalHariIni"></div>
+
+        </header>
+
+
+        <section class="content">
+
+            <!-- FORM -->
+            <div class="form-panel">
+
+                <div class="card">
+
+                    <div class="card-title">
+                        <div>
+                            <h3>Data Pengajuan</h3>
+                            <p>Isi informasi surat izin</p>
+                        </div>
+                    </div>
+
+
+                    <!-- KARYAWAN -->
+                    <div class="form-group">
+
+                        <label for="karyawan">
+                            Nama Karyawan
+                        </label>
+
+                        <select id="karyawan">
+
+                            <option value="">
+                                -- Pilih Karyawan --
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- DATA OTOMATIS -->
+                    <div class="employee-info">
+
+                        <div class="info-box">
+
+                            <span>NIK</span>
+
+                            <strong id="nik">
+                                -
+                            </strong>
+
+                        </div>
+
+                        <div class="info-box">
+
+                            <span>Jabatan</span>
+
+                            <strong id="jabatan">
+                                -
+                            </strong>
+
+                        </div>
+
+                        <div class="info-box">
+
+                            <span>Departemen</span>
+
+                            <strong id="departemen">
+                                -
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- KEPERLUAN -->
+                    <div class="form-group">
+
+                        <label for="jenisIzin">
+                            Keperluan Izin
+                        </label>
+
+                        <select id="jenisIzin">
+
+                            <option value="">
+                                -- Pilih Keperluan --
+                            </option>
+
+                            <option value="Sakit">
+                                Sakit
+                            </option>
+
+                            <option value="Keperluan Keluarga">
+                                Keperluan Keluarga
+                            </option>
+
+                            <option value="Keperluan Pribadi">
+                                Keperluan Pribadi
+                            </option>
+
+                            <option value="Cuti">
+                                Cuti
+                            </option>
+
+                            <option value="Keperluan Mendesak">
+                                Keperluan Mendesak
+                            </option>
+
+                            <option value="Lainnya">
+                                Lainnya
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- CUSTOM KEPERLUAN -->
+                    <div
+                        class="form-group hidden"
+                        id="customKeperluanGroup"
+                    >
+
+                        <label for="customKeperluan">
+                            Keperluan Lainnya
+                        </label>
+
+                        <input
+                            type="text"
+                            id="customKeperluan"
+                            placeholder="Contoh: Mengurus dokumen keluarga"
+                        >
+
+                    </div>
+
+
+                    <!-- TANGGAL -->
+                    <div class="two-column">
+
+                        <div class="form-group">
+
+                            <label for="tanggalMulai">
+                                Tanggal Mulai
+                            </label>
+
+                            <input
+                                type="date"
+                                id="tanggalMulai"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="tanggalSelesai">
+                                Tanggal Selesai
+                            </label>
+
+                            <input
+                                type="date"
+                                id="tanggalSelesai"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- KETERANGAN -->
+                    <div class="form-group">
+
+                        <label for="keterangan">
+                            Keterangan
+                        </label>
+
+                        <textarea
+                            id="keterangan"
+                            rows="5"
+                            placeholder="Tuliskan keterangan atau alasan izin..."
+                        ></textarea>
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+                    <div class="form-group">
+
+                        <label for="emailTujuan">
+                            Email Tujuan
+                        </label>
+
+                        <input
+                            type="email"
+                            id="emailTujuan"
+                            placeholder="contoh@email.com"
+                        >
+
+                        <small>
+                            Bisa diisi email atasan, HRD, atau tujuan lainnya.
+                        </small>
+
+                    </div>
+
+
+                    <!-- BUTTON -->
+                    <div class="buttons">
+
+                        <button
+                            class="btn secondary"
+                            id="btnPreview"
+                        >
+                            👁 Preview
+                        </button>
+
+
+                        <button
+                            class="btn primary"
+                            id="btnPDF"
+                        >
+                            📥 Download PDF
+                        </button>
+
+
+                        <button
+                            class="btn email"
+                            id="btnEmail"
+                        >
+                            ✉ Kirim Email
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- PREVIEW -->
+            <div class="preview-panel">
+
+                <div class="preview-header">
+
+                    <div>
+
+                        <h3>Preview Surat</h3>
+
+                        <span>
+                            Tampilan surat sebelum dikirim
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="paper-container">
+
+                    <div
+                        class="paper"
+                        id="surat"
+                    >
+
+                        <!-- HEADER -->
+                        <div class="letter-header">
+
+                            <h2>SURAT IZIN</h2>
+
+                            <div class="line"></div>
+
+                        </div>
+
+
+                        <!-- ISI -->
+                        <div class="letter-body">
+
+                            <p>
+                                Kepada Yth.
+                            </p>
+
+                            <p>
+                                Bapak/Ibu Atasan
+                                <br>
+                                Di Tempat
+                            </p>
+
+
+                            <p>
+                                Dengan hormat,
+                            </p>
+
+
+                            <p>
+                                Saya yang bertanda tangan di bawah ini:
+                            </p>
+
+
+                            <table>
+
+                                <tr>
+                                    <td>Nama</td>
+                                    <td>:</td>
+                                    <td id="previewNama">
+                                        -
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>NIK</td>
+                                    <td>:</td>
+                                    <td id="previewNik">
+                                        -
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Jabatan</td>
+                                    <td>:</td>
+                                    <td id="previewJabatan">
+                                        -
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Departemen</td>
+                                    <td>:</td>
+                                    <td id="previewDepartemen">
+                                        -
+                                    </td>
+                                </tr>
+
+                            </table>
+
+
+                            <p>
+                                Dengan ini mengajukan izin untuk:
+                            </p>
+
+
+                            <table>
+
+                                <tr>
+                                    <td>Keperluan</td>
+                                    <td>:</td>
+                                    <td id="previewKeperluan">
+                                        -
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Tanggal</td>
+                                    <td>:</td>
+                                    <td id="previewTanggal">
+                                        -
+                                    </td>
+                                </tr>
+
+                            </table>
+
+
+                            <p>
+                                <strong>Keterangan:</strong>
+                            </p>
+
+                            <p id="previewKeterangan">
+                                -
+                            </p>
+
+
+                            <p>
+                                Demikian surat izin ini saya buat
+                                dengan sebenar-benarnya.
+                                Atas perhatian dan pengertiannya
+                                saya ucapkan terima kasih.
+                            </p>
+
+                        </div>
+
+
+                        <!-- TTD -->
+                        <div class="signature">
+
+                            <p id="previewKota">
+                                Jakarta,
+                                <span id="previewTanggalSurat"></span>
+                            </p>
+
+
+                            <p>
+                                Hormat saya,
+                            </p>
+
+
+                            <div class="signature-image">
+
+                                <img
+                                    id="previewSignature"
+                                    src=""
+                                    alt="Tanda Tangan"
+                                >
+
+                            </div>
+
+
+                            <strong id="previewNamaSignature">
+                                -
+                            </strong>
+
+
+                            <span id="previewJabatanSignature">
+                                -
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- LOADING -->
+<div
+    class="loading hidden"
+    id="loading"
+>
+
+    <div class="loading-box">
+
+        <div class="spinner"></div>
+
+        <p>
+            Sedang memproses...
+        </p>
+
+    </div>
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
